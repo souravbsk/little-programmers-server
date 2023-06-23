@@ -46,6 +46,28 @@ async function run() {
       const result = await userCollection.insertOne(newUser);
       res.send(result);
     });
+
+    app.put("/users/admin/:id", async (req,res) => {
+      const userId = req.params.id;
+      const filter = {_id: new ObjectId(userId)};
+
+      const options = { upsert: true };
+
+      const userRoleUpdate = {
+        $set: {
+          role: "admin",
+        },
+      };
+      const result = await userCollection.updateOne(
+        filter,
+        userRoleUpdate,
+        options
+      );
+
+      res.send(result)
+    })
+
+
     //groups api
     app.get("/groups", async (req, res) => {
       const groups = await groupCollection.find({}).toArray();
